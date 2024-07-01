@@ -3,6 +3,11 @@
 # Exit on any error
 set -e
 
+# Define your domain name
+# Example:
+# DOMAIN_NAME="test.domain.com"
+DOMAIN_NAME="your_domain"
+
 # Update system and install dependencies
 apt update
 apt upgrade -y
@@ -14,6 +19,12 @@ apt install -y nodejs
 
 # Install node-pre-gyp globally
 npm install -g node-pre-gyp
+
+# Install Certbot for SSL
+apt install -y certbot python3-certbot-nginx
+
+# Obtain Let's Encrypt SSL certificate
+certbot certonly --standalone -d $DOMAIN_NAME --email your_email --agree-tos --non-interactive
 
 # Create server directory
 mkdir -p /opt/webrtc_server/results
@@ -33,10 +44,6 @@ fi
 if lsof -Pi :9001 -sTCP:LISTEN -t >/dev/null ; then
     lsof -Pi :9001 -sTCP:LISTEN -t | xargs kill -9
 fi
-
-# Generate self-signed SSL certificate
-mkdir -p /etc/ssl/private
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/webrtc-selfsigned.key -out /etc/ssl/certs/webrtc-selfsigned.crt -subj "/CN=$(curl -4 icanhazip.com)"
 
 # Create server code
 cat <<'EOF' > server.js
@@ -147,8 +154,8 @@ app.get('/results/:id', (req, res) => {
 
 // Create HTTPS server for Express and uWebSockets.js
 const httpsOptions = {
-  key: fs.readFileSync('/etc/ssl/private/webrtc-selfsigned.key'),
-  cert: fs.readFileSync('/etc/ssl/certs/webrtc-selfsigned.crt')
+  key: fs.readFileSync('/etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem')
 };
 
 const httpsServer = https.createServer(httpsOptions, app);
@@ -158,8 +165,8 @@ httpsServer.listen(443, () => {
 });
 
 const uwsApp = uWS.SSLApp({
-  key_file_name: '/etc/ssl/private/webrtc-selfsigned.key',
-  cert_file_name: '/etc/ssl/certs/webrtc-selfsigned.crt'
+  key_file_name: '/etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem',
+  cert_file_name: '/etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem'
 }).ws('/*', {
   open: (ws) => {
     console.log('WebSocket connection opened');
@@ -411,5 +418,4 @@ EOF
 # Start the server
 node server.js &
 
-echo "Server setup complete. Open a web browser and navigate to https://$(curl -4 icanhazip.com) to test the packet loss functionality."
-
+echo "Server setup complete. Open a web browser and navigate to https://$DOMAIN_NAME to test the packet loss functionality."
