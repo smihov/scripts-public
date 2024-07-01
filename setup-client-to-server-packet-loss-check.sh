@@ -69,7 +69,7 @@ app.get('/results/:id', (req, res) => {
         <html lang="en">
         <head>
           <meta charset="UTF-8">
-          <title>411Locals Packet Loss Test Results</title>
+          <title>Packet Loss Test Results</title>
           <style>
             body {
               font-family: Arial, sans-serif;
@@ -117,7 +117,7 @@ app.get('/results/:id', (req, res) => {
         <body>
           <div class="container">
             <img src="/411logo.png" alt="411Logo" class="logo">
-            <h1>411Locals Packet Loss Test Results</h1>
+            <h1>Packet Loss Test Results</h1>
             <div class="result">
               <p>Total Packets: ${resultData.totalPackets}</p>
               <p>Received Packets: ${resultData.receivedPackets}</p>
@@ -273,7 +273,7 @@ cat <<'EOF' > public/index.html
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>411Locals Packet Loss Test</title>
+  <title>Packet Loss Test</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -330,7 +330,7 @@ cat <<'EOF' > public/index.html
 <body>
   <div class="container">
     <img src="/411logo.png" alt="411Logo" class="logo">
-    <h1>411Locals Packet Loss Test</h1>
+    <h1>Packet Loss Test</h1>
     <button id="startTest">TEST</button>
     <div id="loading-bar" style="display: none;">
       <div></div>
@@ -411,5 +411,5 @@ EOF
 # Start the server
 node server.js &
 
-echo "Server setup complete. Open a web browser and navigate to https://$(curl -4 icanhazip.com) to test the 411Locals packet loss functionality."
+echo "Server setup complete. Open a web browser and navigate to https://$(curl -4 icanhazip.com) to test the packet loss functionality."
 
