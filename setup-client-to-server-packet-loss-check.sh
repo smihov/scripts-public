@@ -3,10 +3,14 @@
 # Exit on any error
 set -e
 
+### 	VARIABLES	###
 # Define your domain name
+# Define your email address, used for the certbot
 # Example:
 # DOMAIN_NAME="test.domain.com"
+# EMAIL_ADDR="me@testing.com"
 DOMAIN_NAME="your_domain"
+EMAIL_ADDR="your_email_address"
 
 # Update system and install dependencies
 apt update
@@ -24,7 +28,7 @@ npm install -g node-pre-gyp
 apt install -y certbot python3-certbot-nginx
 
 # Obtain Let's Encrypt SSL certificate
-certbot certonly --standalone -d $DOMAIN_NAME --email your_email --agree-tos --non-interactive
+certbot certonly --standalone -d $DOMAIN_NAME --email $EMAIL_ADDR --agree-tos --non-interactive
 
 # Create server directory
 mkdir -p /opt/webrtc_server/results

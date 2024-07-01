@@ -33,10 +33,11 @@ This script sets up a WebRTC Packet Loss Test Server using Node.js and various o
    cd <repository_directory>
    ```
 
-2. **Set Your Domain Name:**
-   Open the script and set your domain name at the beginning of the script:
+2. **Set Your Domain Name and your email address:**
+   Open the script and set your domain name and your email address (used for certbot) at the beginning of the script:
    ```sh
    DOMAIN_NAME="your_domain"
+   EMAIL_ADDR="your_email_address"
    ```
 
 3. **Run the Setup Script:**
